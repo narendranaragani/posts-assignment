@@ -16,7 +16,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // const [favourites, setFavourites] = useState({})
+  const [favourites, setFavourites] = useState({})
   const postPerPages =9;
 
     const fetchPosts = async (isManual = false) => {
@@ -44,7 +44,12 @@ function App() {
       fetchPosts();
     },[])
 
-    
+    const toggleFavorite = (postId) => {
+      setFavourites((prev) => ({
+        ...prev,
+        [postId]: !prev[postId],
+      }));
+    };
 
   const debounceSearch = useDebounce(searchText, 500);
   const filteredPosts = useMemo(() => {
@@ -120,7 +125,12 @@ function App() {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {paginatedPosts.map((post) => (
-                  <PostCard key={post.id} post={post}/>
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    isFavourite={favourites[post.id]}
+                    onToggleFavorite={toggleFavorite}
+                  />
                 ))}
               </div>
             )}
