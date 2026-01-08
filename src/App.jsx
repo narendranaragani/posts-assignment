@@ -3,12 +3,14 @@ import PostCard from "./components/PostCard.jsx";
 import useDebounce from "./hooks/useDebounce.js";
 import SearchBar from "./components/SearchBar.jsx";
 import { BeatLoader } from "react-spinners";
+import UserFilter from "./components/UserFilter.jsx";
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -34,10 +36,15 @@ function App() {
   const debounceSearch = useDebounce(searchText, 500);
 
   const filteredPosts = useMemo(() => {
-    return posts.filter((post) =>
-      post.title.toLowerCase().includes(debounceSearch.toLowerCase())
-    );
-  }, [posts, debounceSearch]);
+    return posts.filter((post) => {
+      const matchesSearch = post.title
+        .toLowerCase()
+        .includes(debounceSearch.toLowerCase());
+      const matchesUser =
+        selectedUser === "" || post.userId === Number(selectedUser);
+      return matchesSearch && matchesUser;
+    });
+  }, [posts, debounceSearch, selectedUser]);
 
   if (loading) {
     return (
@@ -54,6 +61,10 @@ function App() {
       <div className="min-h-screen bg-[#050a18] px-6 py-10">
         <div className="max-w-7xl mx-auto">
           <SearchBar searchText={searchText} setSearchText={setSearchText} />
+          <UserFilter
+            selectedUser={selectedUser}
+            setSelectedUser={setSelectedUser}
+          />
           {filteredPosts.length === 0 ? (
             <div className="flex items-center justify-center h-[60vh]">
               <p className="text-gray-400 text-lg">No posts found</p>
