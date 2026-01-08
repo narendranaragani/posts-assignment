@@ -4,6 +4,7 @@ import useDebounce from "./hooks/useDebounce.js";
 import SearchBar from "./components/SearchBar.jsx";
 import { BeatLoader } from "react-spinners";
 import UserFilter from "./components/UserFilter.jsx";
+import Pagination from "./components/Pagination.jsx";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -11,6 +12,8 @@ function App() {
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const postPerPages =9;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -34,7 +37,6 @@ function App() {
   }, []);
 
   const debounceSearch = useDebounce(searchText, 500);
-
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchesSearch = post.title
@@ -45,6 +47,14 @@ function App() {
       return matchesSearch && matchesUser;
     });
   }, [posts, debounceSearch, selectedUser]);
+
+
+  //Pagination Logic
+  const totalPages = Math.ceil(filteredPosts.length / postPerPages);
+  const startIndex = (currentPage - 1) * postPerPages;
+  const endIndex = startIndex + postPerPages;
+
+  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
   if (loading) {
     return (
@@ -65,17 +75,22 @@ function App() {
             selectedUser={selectedUser}
             setSelectedUser={setSelectedUser}
           />
-          {filteredPosts.length === 0 ? (
+          {paginatedPosts.length === 0 ? (
             <div className="flex items-center justify-center h-[60vh]">
               <p className="text-gray-400 text-lg">No posts found</p>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredPosts.map((post) => (
+              {paginatedPosts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
             </div>
           )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       </div>
     </>
