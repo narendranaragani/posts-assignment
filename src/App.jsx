@@ -10,15 +10,20 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [searchText, setSearchText] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  // const [favourites, setFavourites] = useState({})
   const postPerPages =9;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPosts = async (isManual = false) => {
       try {
-        setLoading(true);
+        if(!isManual){
+          setLoading(true)
+        }
         const response = await fetch(
           "https://jsonplaceholder.typicode.com/posts"
         );
@@ -30,11 +35,16 @@ function App() {
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        if (!isManual) {
+          setLoading(false);
+        }
       }
     };
-    fetchPosts();
-  }, []);
+    useEffect(()=>{
+      fetchPosts();
+    },[])
+
+    
 
   const debounceSearch = useDebounce(searchText, 500);
   const filteredPosts = useMemo(() => {
@@ -59,7 +69,7 @@ function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen w-screen">
-        <BeatLoader />
+        <BeatLoader color="#6366f1"/>
       </div>
     );
   }
@@ -70,22 +80,51 @@ function App() {
     <>
       <div className="min-h-screen bg-[#050a18] px-6 py-10">
         <div className="max-w-7xl mx-auto">
-          <SearchBar searchText={searchText} setSearchText={setSearchText} />
-          <UserFilter
-            selectedUser={selectedUser}
-            setSelectedUser={setSelectedUser}
-          />
-          {paginatedPosts.length === 0 ? (
-            <div className="flex items-center justify-center h-[60vh]">
-              <p className="text-gray-400 text-lg">No posts found</p>
+          <div className="mb-8 rounded-2xl p-4">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex-1">
+                <SearchBar
+                  searchText={searchText}
+                  setSearchText={setSearchText}
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <UserFilter
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
+                <button
+                  onClick={() => {
+                    setIsRefreshing(true);
+                    fetchPosts(true);
+                    setTimeout(() => setIsRefreshing(false), 1000);
+                  }}
+                  disabled={isRefreshing}
+                  className="h-8 w-11 mb-6 flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+                >
+                  <span className={isRefreshing ? "animate-spin" : ""}>⟳</span>
+                </button>
+              </div>
             </div>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {paginatedPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-          )}
+          </div>
+
+          <div className="min-h-[60vh]">
+            {isRefreshing ? (
+              <div className="flex items-center justify-center h-[60vh]">
+                <BeatLoader color="#6366f1" />
+              </div>
+            ) : paginatedPosts.length === 0 ? (
+              <div className="flex items-center justify-center h-[60vh]">
+                <p className="text-gray-400 text-lg">No posts found</p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {paginatedPosts.map((post) => (
+                  <PostCard key={post.id} post={post}/>
+                ))}
+              </div>
+            )}
+          </div>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
