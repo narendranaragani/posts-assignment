@@ -5,6 +5,7 @@ import SearchBar from "./components/SearchBar.jsx";
 import { BeatLoader } from "react-spinners";
 import UserFilter from "./components/UserFilter.jsx";
 import Pagination from "./components/Pagination.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -17,7 +18,7 @@ function App() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [favourites, setFavourites] = useState({})
-  const postPerPages =9;
+  const postPerPages = 9;
 
     const fetchPosts = async (isManual = false) => {
       try {
@@ -83,7 +84,8 @@ function App() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#050a18] px-6 py-10">
+      <ThemeToggle />
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] px-6 py-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8 rounded-2xl p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
