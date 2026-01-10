@@ -5,7 +5,7 @@ A modern React-based dashboard that fetches posts from a public API and provides
 ---
 
 ## 🔗 Live Demo
-https://mind-slate-listing-app.vercel.app/
+https://posts-assignment-swart.vercel.app/
 
 ---
 
@@ -91,21 +91,10 @@ src/
 ---
 
 ### 7. Clean Architecture
-- Filtering logic extracted to `filterPosts` utility
-- Pagination logic extracted to `paginate` utility
 - `App.jsx` focuses only on state and rendering
 
 ---
 
-## ⚙ Utility Functions
-
-### `filterPosts(posts, searchText, selectedUser)`
-Filters posts based on search text and selected author.
-
-### `paginate(items, currentPage, itemsPerPage)`
-Returns paginated items and total page count.
-
----
 
 ## 🚀 Run Locally
 
