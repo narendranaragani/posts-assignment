@@ -1,8 +1,8 @@
 function SearchBar({ searchText, setSearchText }) {
   return (
-    <div className="relative w-full mb-6">
-      <svg
-        className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
+    <div className="flex items-center gap-3 w-full bg-[var(--bg-primary)] px-5 py-3 rounded-xl border border-[var(--border)]transition focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-glow)]">
+      <svg 
+      className="h-5 w-5 text-[var(--text-secondary)]"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -21,7 +21,7 @@ function SearchBar({ searchText, setSearchText }) {
         placeholder="Search by title..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        className="w-full rounded-lg bg-[#0b1224] border border-gray-700 py-2.5 pl-11 pr-4 text-gray-100 placeholder-gray-400"
+        className="w-full bg-transparent outline-none border-none text-[var(--text-primary)] placeholder-[var(--text-secondary)] text-base"
       />
     </div>
   );

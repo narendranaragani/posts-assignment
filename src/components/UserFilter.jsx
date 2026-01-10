@@ -4,10 +4,23 @@ function UserFilter({ selectedUser, setSelectedUser }) {
       <select
         value={selectedUser}
         onChange={(e) => setSelectedUser(e.target.value)}
-        className="border border-gray-300 rounded-xl px-4 py-2 mb-6
-               bg-white shadow-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500
-               hover:border-gray-400 transition"
+        className="
+         mt-5
+          px-5 py-3 mb-6
+          rounded-xl
+          bg-[var(--bg-primary)]
+          border border-[var(--border)]
+          text-[var(--text-primary)]
+          text-sm
+          cursor-pointer
+          font-inherit
+          outline-none
+          transition
+          hover:border-[var(--accent)]
+          focus:border-[var(--accent)]
+          focus:ring-4
+          focus:ring-[var(--accent-glow)]
+        "
       >
         <option value="">All Authors</option>
         {[...Array(10)].map((_, i) => (

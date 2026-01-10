@@ -5,7 +5,9 @@ import SearchBar from "./components/SearchBar.jsx";
 import { BeatLoader } from "react-spinners";
 import UserFilter from "./components/UserFilter.jsx";
 import Pagination from "./components/Pagination.jsx";
-import ThemeToggle from "./components/ThemeToggle.jsx";
+import { LuSearchX } from "react-icons/lu";
+import Navbar from "./components/Header.jsx";
+import Footer from "./components/footer.jsx";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -18,8 +20,9 @@ function App() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [favourites, setFavourites] = useState({})
-  const postPerPages = 9;
+  const postPerPages = 6;
 
+  //fetching the API
     const fetchPosts = async (isManual = false) => {
       try {
         if(!isManual){
@@ -52,6 +55,7 @@ function App() {
       }));
     };
 
+  //filter logic
   const debounceSearch = useDebounce(searchText, 500);
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
@@ -69,7 +73,6 @@ function App() {
   const totalPages = Math.ceil(filteredPosts.length / postPerPages);
   const startIndex = (currentPage - 1) * postPerPages;
   const endIndex = startIndex + postPerPages;
-
   const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
   if (loading) {
@@ -84,8 +87,8 @@ function App() {
 
   return (
     <>
-      <ThemeToggle />
-      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] px-6 py-10">
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
+        <Navbar />
         <div className="max-w-7xl mx-auto">
           <div className="mb-8 rounded-2xl p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -107,7 +110,7 @@ function App() {
                     setTimeout(() => setIsRefreshing(false), 1000);
                   }}
                   disabled={isRefreshing}
-                  className="h-8 w-11 mb-6 flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+                  className="h-8 w-11 mb-6 mt-5 flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40"
                 >
                   <span className={isRefreshing ? "animate-spin" : ""}>⟳</span>
                 </button>
@@ -121,11 +124,12 @@ function App() {
                 <BeatLoader color="#6366f1" />
               </div>
             ) : paginatedPosts.length === 0 ? (
-              <div className="flex items-center justify-center h-[60vh]">
-                <p className="text-gray-400 text-lg">No posts found</p>
+              <div className="flex gap-2 items-center justify-center h-[60vh]">
+                <LuSearchX size={30} className="text-gray-400"/>
+                <p className="font-semibold text-2xl text-gray-400">No posts found</p>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 ">
                 {paginatedPosts.map((post) => (
                   <PostCard
                     key={post.id}
@@ -137,11 +141,18 @@ function App() {
               </div>
             )}
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-          />
+          <div className="mb-5">
+            {filteredPosts.length > 0 ? (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+          <Footer />
         </div>
       </div>
     </>
