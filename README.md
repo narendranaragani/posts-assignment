@@ -111,6 +111,6 @@ Returns paginated items and total page count.
 
 ```bash
 git clone https://github.com/narendranaragani/posts-assignment
-cd Mindslate-Assignment
+cd mindslate-assignment
 npm install
 npm run dev
